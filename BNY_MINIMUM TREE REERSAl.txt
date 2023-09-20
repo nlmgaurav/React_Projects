@@ -1,0 +1,33 @@
+    
+      void dfs1(int x, int f, const vector<vector<pair<int, bool>>> &con, vector<int> &dp) {
+    dp[x] = 0;
+    for (const auto& p : con[x]) {
+        if (p.first != f) {
+            dfs1(p.first, x, con, dp);
+            dp[x] += dp[p.first] + !p.second;
+        }
+    } 
+}
+
+void dfs2(int x, int f, const vector<vector<pair<int, bool>>> &con, vector<int> &dp)  {
+    for (const auto& p : con[x]) {
+        if (p.first != f) {
+            dp[p.first] = dp[x] + (p.second ? 1 : -1);
+            dfs2(p.first, x, con, dp);
+        }
+    } 
+
+}
+
+int solution(const vector<int> &from, const vector<int> &to) {
+    const int n = from.size() + 1;
+    vector<vector<pair<int, bool>>> con(n);
+    for (int i = 0; i + 1 < n; ++i) {
+        con[from[i] - 1].push_back({to[i] - 1, true});
+        con[to[i] - 1].push_back({from[i] - 1, false});
+    }
+    vector<int> dp(n);
+    dfs1(0, -1, con, dp);
+    dfs2(0, -1, con, dp);
+    return *min_element(dp.begin(), dp.end());
+}

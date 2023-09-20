@@ -1,0 +1,36 @@
+   int solution(int a, int b, int n) {
+    if (n) {  // If n is non-zero (i.e., there are bits to process)
+        int t = 0;  // Initialize a temporary variable t to 0
+
+        // Loop through each bit from the leftmost to the rightmost
+        for (int mask = 1 << (n - 1); mask > 0; mask >>= 1) {
+            const int ca = a & mask;  // Get the bit from a at the current position
+            const int cb = b & mask;  // Get the bit from b at the current position
+
+            if (ca == cb) {  // If the corresponding bits in a and b are the same
+                if (ca == 0) {  // If both bits are 0
+                    a |= mask;  // Set the bit in a to 1
+                    b |= mask;  // Set the bit in b to 1
+                }
+            } else {  // If the corresponding bits in a and b are different
+                a &= ~mask;  // Set the bit in a to 0
+                b &= ~mask;  // Set the bit in b to 0
+                t |= mask;   // Set the bit in t to 1 to keep track of changes
+            }
+        }
+
+        // Loop through each bit from the rightmost to the leftmost in t
+        for (int mask = 1; mask <= n; mask <<= 1) {
+            if (t & mask) {  // If the corresponding bit in t is 1
+                if (a < b) {
+                    a |= mask;  // Set the bit in a to 1
+                } else {
+                    b |= mask;  // Set the bit in b to 1
+                }
+            }
+        }
+    }
+
+    // Return the result of multiplying a and b modulo 1000000007
+    return static_cast<long long>(a) * b % 1000000007;
+}
